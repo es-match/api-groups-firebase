@@ -19,7 +19,24 @@ router.get("/groups/byUser/:userID", (request, response) => {
           groups.forEach((group) => {
             listGroups.push({
               id: group.id,
-              groupName: group.data().groupName,
+              groupName: group.data().groupName == null ?
+              "": group.data().groupName,
+              groupAdmins: group.data().groupAdmins == null ?
+              "": group.data().groupAdmins,
+              groupPending: group.data().groupPending == null ?
+              "": group.data().groupPending,
+              groupUser: group.data().groupUsers == null ?
+              "": group.data().groupUsers,
+              imageUrl: group.data().imageUrl == null ?
+              "": group.data().imageUrl,
+              sportID: group.data().sportID == null ?
+              "" : group.data().sportID.get()
+                  .then((sport) => {
+                    return sport.data().sportName == null ?
+                    "": group.data().sportName;
+                  }),
+              userCreator: group.data().userCreator == null ?
+              "": group.data().userCreator,
             });
           });
           response.json(listGroups);
