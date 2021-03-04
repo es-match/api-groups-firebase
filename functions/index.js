@@ -20,13 +20,13 @@ router.get("/groups/byUser/:userID", (request, response) => {
             listGroups.push({
               id: group.id,
               groupName: group.data().groupName == null ?
-              "": group.data().groupName,
+              "" : group.data().groupName,
               groupAdmins: group.data().groupAdmins == null ?
-              "": group.data().groupAdmins,
+              [""] : group.data().groupAdmins,
               groupPending: group.data().groupPending == null ?
-              "": group.data().groupPending,
+              [""] : group.data().groupPending,
               groupUser: group.data().groupUsers == null ?
-              "": group.data().groupUsers,
+              [""] : group.data().groupUsers,
               imageUrl: group.data().imageUrl == null ?
               "": group.data().imageUrl,
               sportID: group.data().sportID == null ?
