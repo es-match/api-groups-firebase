@@ -17,26 +17,31 @@ router.get("/groups/byUser/:userID", (request, response) => {
         if (!groups.empty) {
           const listGroups = [];
           groups.forEach((group) => {
+            const groupData = group.data();
+
             listGroups.push({
               id: group.id,
-              groupName: group.data().groupName == null ?
-              "" : group.data().groupName,
-              groupAdmins: group.data().groupAdmins == null ?
-              [""] : group.data().groupAdmins,
-              groupPending: group.data().groupPending == null ?
-              [""] : group.data().groupPending,
-              groupUser: group.data().groupUsers == null ?
-              [""] : group.data().groupUsers,
-              imageUrl: group.data().imageUrl == null ?
-              "": group.data().imageUrl,
-              sportID: group.data().sportID == null ?
-              "" : group.data().sportID.get()
+              groupName: groupData.groupName == null ?
+              "" : groupData.groupName,
+              groupAdmins: groupData.groupAdmins == null ?
+              [""] : groupData.groupAdmins,
+              groupPending: groupData.groupPending == null ?
+              [""] : groupData.groupPending,
+              groupUser: groupData.groupUsers == null ?
+              [""] : groupData.groupUsers,
+              imageUrl: groupData.imageUrl == null ?
+              "": groupData.imageUrl,
+              sportID: groupData.sportID == null ?
+              "": groupData.sportID,  
+              sportRef: groupData.sportRef == null ?
+              "No Reference" : groupData.sportRef.get()
                   .then((sport) => {
                     return sport.data().sportName == null ?
-                    "": group.data().sportName;
+                    "Not found": {sportName: sport.data().sportName};
                   }),
               userCreator: group.data().userCreator == null ?
               "": group.data().userCreator,
+              // gData: groupData,
             });
           });
           response.json(listGroups);
