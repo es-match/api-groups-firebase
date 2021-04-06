@@ -51,6 +51,46 @@ router.get("/groups/byUser/:userID", (request, response) => {
       });
 });
 
+router.get("/groups/byName/:groupName", (request, response) => {
+  db.where("groupName", ">=", request.params.groupName)
+      .where("groupName", "<=", request.params.groupName+ "\uf8ff").get()
+      .then((groups) => {
+        if (!groups.empty) {
+          const listGroups = [];
+          groups.forEach((group) => {
+            const groupData = group.data();
+
+            listGroups.push({
+              id: group.id,
+              groupName: groupData.groupName == null ?
+              "" : groupData.groupName,
+              groupAdmins: groupData.groupAdmins == null ?
+              [""] : groupData.groupAdmins,
+              groupPending: groupData.groupPending == null ?
+              [""] : groupData.groupPending,
+              groupUser: groupData.groupUsers == null ?
+              [""] : groupData.groupUsers,
+              imageUrl: groupData.imageUrl == null ?
+              "": groupData.imageUrl,
+              sportID: groupData.sportID == null ?
+              "": groupData.sportID,
+              sportRef: groupData.sportRef == null ?
+              "No Reference" : groupData.sportRef.get()
+                  .then((sport) => {
+                    return sport.data().sportName == null ?
+                    "Not found": {sportName: sport.data().sportName};
+                  }),
+              userCreator: group.data().userCreator == null ?
+              "": group.data().userCreator,
+              // gData: groupData,
+            });
+          });
+          response.status(200).json(listGroups);
+        } else {
+          response.status(204).send("Groups by name not found");
+        }
+      });
+});
 
 // router.get("/groups/:groupId", (request, response) => {
 //   db.doc(request.params.id).get()
