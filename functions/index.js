@@ -106,4 +106,29 @@ router.get("/groups", (request, response) => {
         }
       });
 });
+
+
+router.post("/groups", (request, response) => {
+  const actualDate = new Date(Date.now());
+
+  const newGroup = {
+
+    "groupName": request.body.groupName,
+    "groupAdmins": [request.body.groupAdmins],
+    "groupPending": [],
+    "groupUser": [request.body.groupUser],
+    "imageUrl": request.body.imageUrl,
+    "sportID": request.body.sportID,
+    "sportRef": null,
+    "createDate": actualDate,
+    "userCreator": request.body.userCreator,
+  };
+
+  db.add(newGroup)
+      .then(() => {
+        response.status(200).json("Success Added");
+      });
+});
+
+
 exports.dbGroups = functions.https.onRequest(app);
