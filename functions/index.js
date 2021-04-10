@@ -23,6 +23,8 @@ router.get("/groups/byUser/:userID", (request, response) => {
               id: group.id,
               groupName: groupData.groupName == null ?
               "" : groupData.groupName,
+              groupDescription: groupData.groupDescription == null ?
+              "" : groupData.groupDescription,
               groupAdmins: groupData.groupAdmins == null ?
               [""] : groupData.groupAdmins,
               groupPending: groupData.groupPending == null ?
@@ -119,6 +121,8 @@ router.get("/groups", (request, response) => {
               id: group.id,
               groupName: groupData.groupName == null ?
               "" : groupData.groupName,
+              groupDescription: groupData.groupDescription == null ?
+              "" : groupData.groupDescription,
               groupAdmins: groupData.groupAdmins == null ?
               [""] : groupData.groupAdmins,
               groupPending: groupData.groupPending == null ?
@@ -146,4 +150,29 @@ router.get("/groups", (request, response) => {
         }
       });
 });
+
+
+router.post("/groups", (request, response) => {
+  const actualDate = new Date(Date.now());
+
+  const newGroup = {
+
+    "groupName": request.body.groupName,
+    "groupAdmins": [request.body.groupAdmins],
+    "groupPending": [],
+    "groupUser": [request.body.groupUser],
+    "imageUrl": request.body.imageUrl,
+    "sportID": request.body.sportID,
+    "sportRef": null,
+    "createDate": actualDate,
+    "userCreator": request.body.userCreator,
+  };
+
+  db.add(newGroup)
+      .then(() => {
+        response.status(200).json("Success Added");
+      });
+});
+
+
 exports.dbGroups = functions.https.onRequest(app);
