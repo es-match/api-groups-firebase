@@ -23,6 +23,8 @@ router.get("/groups/byUser/:userID", (request, response) => {
               id: group.id,
               groupName: groupData.groupName == null ?
               "" : groupData.groupName,
+              groupDescription: groupData.groupDescription == null ?
+              "" : groupData.groupDescription,
               groupAdmins: groupData.groupAdmins == null ?
               [""] : groupData.groupAdmins,
               groupPending: groupData.groupPending == null ?
@@ -79,6 +81,8 @@ router.get("/groups", (request, response) => {
               id: group.id,
               groupName: groupData.groupName == null ?
               "" : groupData.groupName,
+              groupDescription: groupData.groupDescription == null ?
+              "" : groupData.groupDescription,
               groupAdmins: groupData.groupAdmins == null ?
               [""] : groupData.groupAdmins,
               groupPending: groupData.groupPending == null ?
