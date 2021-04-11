@@ -160,7 +160,7 @@ router.post("/groups", (request, response) => {
   const newGroup = {
 
     "groupName": request.body.groupName,
-    "groupDescription": request.body.groupName,
+    "groupDescription": request.body.groupDescription,
     "groupAdmins": [request.body.groupAdmins],
     "groupPending": [],
     "groupUser": [request.body.groupUser],
@@ -171,9 +171,12 @@ router.post("/groups", (request, response) => {
     "userCreator": request.body.userCreator,
   };
 
+  
   db.add(newGroup)
       .then(() => {
         response.status(200).json("Success Added");
+      }).catch((e) => {
+        response.status(500);
       });
 });
 
