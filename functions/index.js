@@ -66,6 +66,8 @@ router.get("/groups/byName/:groupName", (request, response) => {
               id: group.id,
               groupName: groupData.groupName == null ?
               "" : groupData.groupName,
+              groupDescription: groupData.groupDescription == null ?
+              "" : groupData.groupDescription,
               groupAdmins: groupData.groupAdmins == null ?
               [""] : groupData.groupAdmins,
               groupPending: groupData.groupPending == null ?
@@ -158,6 +160,7 @@ router.post("/groups", (request, response) => {
   const newGroup = {
 
     "groupName": request.body.groupName,
+    "groupDescription": request.body.groupName,
     "groupAdmins": [request.body.groupAdmins],
     "groupPending": [],
     "groupUser": [request.body.groupUser],
