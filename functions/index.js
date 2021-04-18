@@ -114,7 +114,7 @@ router.get("/groups/byName/:groupName", (request, response) => {
 
 
 router.get("/groups", (request, response) => {
-  const activitiesArray = dbAct.get();
+  // const activitiesArray = dbAct.get();
 
   db.get()
       .then((groups) => {
@@ -140,7 +140,7 @@ router.get("/groups", (request, response) => {
               sportID: groupData.sportID == null ?
               "": groupData.sportID,
               sportRef: groupData.sportRef == null ?
-              "No Reference" : activitiesArray.doc(groupData.sportID).get()
+              "No Reference" : dbAct.doc(groupData.sportID).get()
                   .then((sport) => {
                     return sport.data().sportName == null ?
                     "Not found": {sportName: sport.data().sportName};
