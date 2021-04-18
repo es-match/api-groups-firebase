@@ -8,6 +8,8 @@ admin.initializeApp();
 const db = admin.firestore()
     .collection("groups");
 
+const dbAct = admin.firestore()
+    .collection("activities");
 
 app.use("/api/v1", router);
 
@@ -29,7 +31,7 @@ router.get("/groups/byUser/:userID", (request, response) => {
               [""] : groupData.groupAdmins,
               groupPending: groupData.groupPending == null ?
               [""] : groupData.groupPending,
-              groupUser: groupData.groupUsers == null ?
+              groupUsers: groupData.groupUsers == null ?
               [""] : groupData.groupUsers,
               imageUrl: groupData.imageUrl == null ?
               "": groupData.imageUrl,
@@ -72,7 +74,7 @@ router.get("/groups/byName/:groupName", (request, response) => {
               [""] : groupData.groupAdmins,
               groupPending: groupData.groupPending == null ?
               [""] : groupData.groupPending,
-              groupUser: groupData.groupUsers == null ?
+              groupUsers: groupData.groupUsers == null ?
               [""] : groupData.groupUsers,
               imageUrl: groupData.imageUrl == null ?
               "": groupData.imageUrl,
@@ -112,6 +114,8 @@ router.get("/groups/byName/:groupName", (request, response) => {
 
 
 router.get("/groups", (request, response) => {
+  const activitiesArray = dbAct.get();
+
   db.get()
       .then((groups) => {
         if (!groups.empty) {
@@ -129,14 +133,14 @@ router.get("/groups", (request, response) => {
               [""] : groupData.groupAdmins,
               groupPending: groupData.groupPending == null ?
               [""] : groupData.groupPending,
-              groupUser: groupData.groupUsers == null ?
+              groupUsers: groupData.groupUsers == null ?
               [""] : groupData.groupUsers,
               imageUrl: groupData.imageUrl == null ?
               "": groupData.imageUrl,
               sportID: groupData.sportID == null ?
               "": groupData.sportID,
               sportRef: groupData.sportRef == null ?
-              "No Reference" : groupData.sportRef.get()
+              "No Reference" : activitiesArray.doc(groupData.sportID).get()
                   .then((sport) => {
                     return sport.data().sportName == null ?
                     "Not found": {sportName: sport.data().sportName};
@@ -163,7 +167,7 @@ router.post("/groups", (request, response) => {
     "groupDescription": request.body.groupDescription,
     "groupAdmins": [request.body.groupAdmins],
     "groupPending": [],
-    "groupUser": [request.body.groupUser],
+    "groupUsers": [request.body.groupUsers],
     "imageUrl": request.body.imageUrl,
     "sportID": request.body.sportID,
     "sportRef": null,
@@ -171,7 +175,7 @@ router.post("/groups", (request, response) => {
     "userCreator": request.body.userCreator,
   };
 
-  
+
   db.add(newGroup)
       .then(() => {
         response.status(200).json("Success Added");
