@@ -106,55 +106,113 @@ router.get("/groups/byName/:groupName", (request, response) => {
 //         userName: group.data().userName,
 //         role: group.data().role,
 //         imageUrl: group.data().imageUrl,
-//         createDate: new Date(group.data().createDate),
-//       })
-//           .catch((error) => response.status(400)
-//               .send(`Cannot get user: ${error}`)));
-// });
+//         createDate: // .send(`Cannot get user: ${error}`)));
 
-
-router.get("/groups", (request, response) => {
+router.get("/groups", async (request, response) => {
   // const activitiesArray = dbAct.get();
 
-  db.get()
-      .then((groups) => {
-        if (!groups.empty) {
-          const listGroups = [];
-          groups.forEach((group) => {
-            const groupData = group.data();
+  const groups = await db.get();
 
-            listGroups.push({
-              id: group.id,
-              groupName: groupData.groupName == null ?
-              "" : groupData.groupName,
-              groupDescription: groupData.groupDescription == null ?
-              "" : groupData.groupDescription,
-              groupAdmins: groupData.groupAdmins == null ?
-              [""] : groupData.groupAdmins,
-              groupPending: groupData.groupPending == null ?
-              [""] : groupData.groupPending,
-              groupUsers: groupData.groupUsers == null ?
-              [""] : groupData.groupUsers,
-              imageUrl: groupData.imageUrl == null ?
-              "": groupData.imageUrl,
-              sportID: groupData.sportID == null ?
-              "": groupData.sportID,
-              sportRef: groupData.sportRef == null ?
-              "No Reference" : dbAct.doc(groupData.sportID).get()
-                  .then((sport) => {
-                    return sport.data().sportName == null ?
-                    "Not found": {sportName: sport.data().sportName};
-                  }),
-              userCreator: group.data().userCreator == null ?
-              "": group.data().userCreator,
-              // gData: groupData,
+  if (!groups.empty) {
+    const listGroups = [];
+    const tempGroups = [];
+    groups.forEach((gr)=>{
+      tempGroups.push(gr.data());
+    });
+    for (const group of tempGroups) {
+    // groups.forEach((group) => {
+      // if (tempGroups[group] != null) {
+      const groupData = group;
+
+      let _sportName;
+
+      try {
+        _sportName = await dbAct.doc(groupData.sportID).get()
+            .then((sport) => {
+              return sport.data().sportName == null ?
+          "": sport.data().sportName;
             });
-          });
-          response.json(listGroups);
-        } else {
-          response.send("Groups by user not found");
-        }
+      } catch (error) {
+        _sportName = null;
+      }
+      // .then((sport) => {
+      //   return sport.data().sportName == null ?
+      //           "Not found": {sportName: sport.data().sportName};
+      // }).catch((e) =>{console.log(e);})
+
+
+      listGroups.push({
+        id: group.id,
+        groupName: groupData.groupName == null ?
+        "" : groupData.groupName,
+        groupDescription: groupData.groupDescription == null ?
+        "" : groupData.groupDescription,
+        groupAdmins: groupData.groupAdmins == null ?
+        [""] : groupData.groupAdmins,
+        groupPending: groupData.groupPending == null ?
+        [""] : groupData.groupPending,
+        groupUsers: groupData.groupUsers == null ?
+        [""] : groupData.groupUsers,
+        imageUrl: groupData.imageUrl == null ?
+        "": groupData.imageUrl,
+        sportID: groupData.sportID == null ?
+        "": groupData.sportID,
+        sportName: groupData.sportID == null ?
+        "": _sportName,
+        userCreator: groupData.userCreator == null ?
+        "": groupData.userCreator,
+        // sportRef: groupData.sportRef == null ?
+        // "No Reference" :
+
+        // // gData: groupData,
       });
+      // }
+    }
+    response.json(listGroups);
+  } else {
+    response.send("Groups by user not found");
+  }
+
+
+  // db.get()
+  //     .then((groups) => {
+  //       if (!groups.empty) {
+  //         const listGroups = [];
+  //         groups.forEach((group) => {
+  //           const groupData = group.data();
+
+  //           listGroups.push({
+  //             id: group.id,
+  //             groupName: groupData.groupName == null ?
+  //             "" : groupData.groupName,
+  //             groupDescription: groupData.groupDescription == null ?
+  //             "" : groupData.groupDescription,
+  //             groupAdmins: groupData.groupAdmins == null ?
+  //             [""] : groupData.groupAdmins,
+  //             groupPending: groupData.groupPending == null ?
+  //             [""] : groupData.groupPending,
+  //             groupUsers: groupData.groupUsers == null ?
+  //             [""] : groupData.groupUsers,
+  //             imageUrl: groupData.imageUrl == null ?
+  //             "": groupData.imageUrl,
+  //             sportID: groupData.sportID == null ?
+  //             "": groupData.sportID,
+  //             sportRef: groupData.sportRef == null ?
+  //             "No Reference" : dbAct.doc(groupData.sportID).get()
+  //                 .then((sport) => {
+  //                   return sport.data().sportName == null ?
+  //                   "Not found": {sportName: sport.data().sportName};
+  //                 }),
+  //             userCreator: group.data().userCreator == null ?
+  //             "": group.data().userCreator,
+  //             // gData: groupData,
+  //           });
+  //         });
+  //         response.json(listGroups);
+  //       } else {
+  //         response.send("Groups by user not found");
+  //       }
+  //     });
 });
 
 
