@@ -181,11 +181,6 @@ router.get("/groups", async (request, response) => {
       } catch (error) {
         _sportName = null;
       }
-      // .then((sport) => {
-      //   return sport.data().sportName == null ?
-      //           "Not found": {sportName: sport.data().sportName};
-      // }).catch((e) =>{console.log(e);})
-
 
       listGroups.push({
         id: group.id,
