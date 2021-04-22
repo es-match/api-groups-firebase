@@ -29,20 +29,20 @@ router.get("/groups/byUser/:userID", async (request, response) => {
       // if (tempGroups[group] != null) {
       const groupData = group;
 
-      let _sportName;
+      let _activityName;
 
       try {
-        _sportName = await dbAct.doc(groupData.sportID).get()
-            .then((sport) => {
-              return sport.data().sportName == null ?
-          "": sport.data().sportName;
+        _activityName = await dbAct.doc(groupData.activityID).get()
+            .then((activity) => {
+              return activity.data().activityName == null ?
+          "": activity.data().activityName;
             });
       } catch (error) {
-        _sportName = null;
+        _activityName = null;
       }
-      // .then((sport) => {
-      //   return sport.data().sportName == null ?
-      //           "Not found": {sportName: sport.data().sportName};
+      // .then((activity) => {
+      //   return activity.data().activityName == null ?
+      //           "Not found": {activityName: activity.data().activityName};
       // }).catch((e) =>{console.log(e);})
 
 
@@ -60,13 +60,13 @@ router.get("/groups/byUser/:userID", async (request, response) => {
         [""] : groupData.groupUsers,
         imageUrl: groupData.imageUrl == null ?
         "": groupData.imageUrl,
-        sportID: groupData.sportID == null ?
-        "": groupData.sportID,
-        sportName: groupData.sportID == null ?
-        "": _sportName,
+        activityID: groupData.activityID == null ?
+        "": groupData.activityID,
+        activityName: groupData.activityID == null ?
+        "": _activityName,
         userCreator: groupData.userCreator == null ?
         "": groupData.userCreator,
-        // sportRef: groupData.sportRef == null ?
+        // activityRef: groupData.activityRef == null ?
         // "No Reference" :
 
         // // gData: groupData,
@@ -94,20 +94,20 @@ router.get("/groups/byName/:groupName", async (request, response) => {
       // if (tempGroups[group] != null) {
       const groupData = group;
 
-      let _sportName;
+      let _activityName;
 
       try {
-        _sportName = await dbAct.doc(groupData.sportID).get()
-            .then((sport) => {
-              return sport.data().sportName == null ?
-          "": sport.data().sportName;
+        _activityName = await dbAct.doc(groupData.activityID).get()
+            .then((activity) => {
+              return activity.data().activityName == null ?
+          "": activity.data().activityName;
             });
       } catch (error) {
-        _sportName = null;
+        _activityName = null;
       }
-      // .then((sport) => {
-      //   return sport.data().sportName == null ?
-      //           "Not found": {sportName: sport.data().sportName};
+      // .then((activity) => {
+      //   return activity.data().activityName == null ?
+      //           "Not found": {activityName: activity.data().activityName};
       // }).catch((e) =>{console.log(e);})
 
 
@@ -125,13 +125,13 @@ router.get("/groups/byName/:groupName", async (request, response) => {
         [""] : groupData.groupUsers,
         imageUrl: groupData.imageUrl == null ?
         "": groupData.imageUrl,
-        sportID: groupData.sportID == null ?
-        "": groupData.sportID,
-        sportName: groupData.sportID == null ?
-        "": _sportName,
+        activityID: groupData.activityID == null ?
+        "": groupData.activityID,
+        activityName: groupData.activityID == null ?
+        "": _activityName,
         userCreator: groupData.userCreator == null ?
         "": groupData.userCreator,
-        // sportRef: groupData.sportRef == null ?
+        // activityRef: groupData.activityRef == null ?
         // "No Reference" :
 
         // // gData: groupData,
@@ -170,16 +170,16 @@ router.get("/groups", async (request, response) => {
       // if (tempGroups[group] != null) {
       const groupData = group;
 
-      let _sportName;
+      let _activityName;
 
       try {
-        _sportName = await dbAct.doc(groupData.sportID).get()
-            .then((sport) => {
-              return sport.data().sportName == null ?
-          "": sport.data().sportName;
+        _activityName = await dbAct.doc(groupData.activityID).get()
+            .then((activity) => {
+              return activity.data().activityName == null ?
+          "": activity.data().activityName;
             });
       } catch (error) {
-        _sportName = null;
+        _activityName = null;
       }
 
       listGroups.push({
@@ -196,13 +196,13 @@ router.get("/groups", async (request, response) => {
         [""] : groupData.groupUsers,
         imageUrl: groupData.imageUrl == null ?
         "": groupData.imageUrl,
-        sportID: groupData.sportID == null ?
-        "": groupData.sportID,
-        sportName: groupData.sportID == null ?
-        "": _sportName,
+        activityID: groupData.activityID == null ?
+        "": groupData.activityID,
+        activityName: groupData.activityID == null ?
+        "": _activityName,
         userCreator: groupData.userCreator == null ?
         "": groupData.userCreator,
-        // sportRef: groupData.sportRef == null ?
+        // activityRef: groupData.activityRef == null ?
         // "No Reference" :
 
         // // gData: groupData,
@@ -219,16 +219,16 @@ router.get("/groups", async (request, response) => {
 router.post("/groups", async (request, response) => {
   const actualDate = new Date(Date.now());
 
-  let _sportName;
+  let _activityName;
 
   try {
-    _sportName = await dbAct.doc(request.body.sportID).get()
-        .then((sport) => {
-          return sport.data().sportName == null ?
-      "": sport.data().sportName;
+    _activityName = await dbAct.doc(request.body.activityID).get()
+        .then((activity) => {
+          return activity.data().activityName == null ?
+      "": activity.data().activityName;
         });
   } catch (error) {
-    _sportName = null;
+    _activityName = null;
   }
 
 
@@ -240,8 +240,8 @@ router.post("/groups", async (request, response) => {
     "groupPending": [],
     "groupUsers": [request.body.groupUsers],
     "imageUrl": request.body.imageUrl,
-    "sportID": request.body.sportID,
-    "sportName": _sportName,
+    "activityID": request.body.activityID,
+    "activityName": _activityName,
     "createDate": actualDate,
     "userCreator": request.body.userCreator,
   };
