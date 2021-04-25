@@ -22,7 +22,18 @@ router.get("/groups/byUser/:userID", async (request, response) => {
     const listGroups = [];
     const tempGroups = [];
     groups.forEach((gr)=>{
-      tempGroups.push(gr.data());
+      tempGroups.push({
+        id: gr.id,
+        groupName: gr.data().groupName,
+        groupDescription: gr.data().groupDescription,
+        groupAdmins: gr.data().groupAdmins,
+        groupPending: gr.data().groupPending,
+        groupUsers: gr.data().groupUsers,
+        imageUrl: gr.data().imageUrl,
+        activityID: gr.data().activityID,
+        activityName: "",
+        userCreator: gr.data().userCreator,
+      });
     });
     for (const group of tempGroups) {
     // groups.forEach((group) => {
@@ -47,7 +58,7 @@ router.get("/groups/byUser/:userID", async (request, response) => {
 
 
       listGroups.push({
-        id: group.id,
+        id: groupData.id,
         groupName: groupData.groupName == null ?
         "" : groupData.groupName,
         groupDescription: groupData.groupDescription == null ?
@@ -87,7 +98,18 @@ router.get("/groups/byName/:groupName", async (request, response) => {
     const listGroups = [];
     const tempGroups = [];
     groups.forEach((gr)=>{
-      tempGroups.push(gr.data());
+      tempGroups.push({
+        id: gr.id,
+        groupName: gr.data().groupName,
+        groupDescription: gr.data().groupDescription,
+        groupAdmins: gr.data().groupAdmins,
+        groupPending: gr.data().groupPending,
+        groupUsers: gr.data().groupUsers,
+        imageUrl: gr.data().imageUrl,
+        activityID: gr.data().activityID,
+        activityName: "",
+        userCreator: gr.data().userCreator,
+      });
     });
     for (const group of tempGroups) {
     // groups.forEach((group) => {
@@ -112,7 +134,7 @@ router.get("/groups/byName/:groupName", async (request, response) => {
 
 
       listGroups.push({
-        id: group.id,
+        id: groupData.id,
         groupName: groupData.groupName == null ?
         "" : groupData.groupName,
         groupDescription: groupData.groupDescription == null ?
@@ -163,7 +185,18 @@ router.get("/groups", async (request, response) => {
     const listGroups = [];
     const tempGroups = [];
     groups.forEach((gr)=>{
-      tempGroups.push(gr.data());
+      tempGroups.push({
+        id: gr.id,
+        groupName: gr.data().groupName,
+        groupDescription: gr.data().groupDescription,
+        groupAdmins: gr.data().groupAdmins,
+        groupPending: gr.data().groupPending,
+        groupUsers: gr.data().groupUsers,
+        imageUrl: gr.data().imageUrl,
+        activityID: gr.data().activityID,
+        activityName: "",
+        userCreator: gr.data().userCreator,
+      });
     });
     for (const group of tempGroups) {
     // groups.forEach((group) => {
@@ -241,17 +274,55 @@ router.post("/groups", async (request, response) => {
     "groupUsers": [request.body.groupUsers],
     "imageUrl": request.body.imageUrl,
     "activityID": request.body.activityID,
-    "activityName": _activityName,
+    // "activityName": _activityName,
     "createDate": actualDate,
     "userCreator": request.body.userCreator,
   };
 
 
   db.add(newGroup)
-      .then(() => {
+      .then((group) => {
+        newGroup.id = group.id;
+        newGroup.activityName = _activityName;
         response.status(200).json(newGroup);
       }).catch((e) => {
         response.status(500);
+      });
+});
+
+
+router.patch("/groups", async (request, response) => {
+  // let _activityName;
+
+  // try {
+  //   _activityName = await dbAct.doc(request.body.activityID).get()
+  //       .then((activity) => {
+  //         return activity.data().activityName == null ?
+  //     "": activity.data().activityName;
+  //       });
+  // } catch (error) {
+  //   _activityName = null;
+  // }
+
+
+  const newGroup = {
+    "id": request.body.id,
+    "groupName": request.body.groupName,
+    "groupDescription": request.body.groupDescription,
+    "groupAdmins": [request.body.groupAdmins],
+    "groupPending": [request.body.groupPending],
+    "groupUsers": [request.body.groupUsers],
+    "imageUrl": request.body.imageUrl,
+    "activityID": request.body.activityID,
+    // "activityName": _activityName,
+  };
+
+
+  db.doc(newGroup.id).update(newGroup)
+      .then(() => {
+        response.status(200).json(newGroup);
+      }).catch((e) => {
+        response.status(500).send(e.message);
       });
 });
 
