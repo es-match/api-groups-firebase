@@ -13,6 +13,84 @@ const dbAct = admin.firestore()
 
 app.use("/api/v1", router);
 
+
+router.get("/groups/byID/:id", async (request, response) => {
+  const groups = await db.doc(request.params.id).get();
+
+
+  if (!groups.empty) {
+    const listGroups = [];
+    const tempGroups = [];
+    groups.forEach((gr)=>{
+      tempGroups.push({
+        id: gr.id,
+        groupName: gr.data().groupName,
+        groupDescription: gr.data().groupDescription,
+        groupAdmins: gr.data().groupAdmins,
+        groupPending: gr.data().groupPending,
+        groupUsers: gr.data().groupUsers,
+        imageUrl: gr.data().imageUrl,
+        activityID: gr.data().activityID,
+        activityName: "",
+        userCreator: gr.data().userCreator,
+      });
+    });
+    for (const group of tempGroups) {
+    // groups.forEach((group) => {
+      // if (tempGroups[group] != null) {
+      const groupData = group;
+
+      let _activityName;
+
+      try {
+        _activityName = await dbAct.doc(groupData.activityID).get()
+            .then((activity) => {
+              return activity.data().activityName == null ?
+          "": activity.data().activityName;
+            });
+      } catch (error) {
+        _activityName = null;
+      }
+      // .then((activity) => {
+      //   return activity.data().activityName == null ?
+      //           "Not found": {activityName: activity.data().activityName};
+      // }).catch((e) =>{console.log(e);})
+
+
+      listGroups.push({
+        id: groupData.id,
+        groupName: groupData.groupName == null ?
+        "" : groupData.groupName,
+        groupDescription: groupData.groupDescription == null ?
+        "" : groupData.groupDescription,
+        groupAdmins: groupData.groupAdmins == null ?
+        [""] : groupData.groupAdmins,
+        groupPending: groupData.groupPending == null ?
+        [""] : groupData.groupPending,
+        groupUsers: groupData.groupUsers == null ?
+        [""] : groupData.groupUsers,
+        imageUrl: groupData.imageUrl == null ?
+        "": groupData.imageUrl,
+        activityID: groupData.activityID == null ?
+        "": groupData.activityID,
+        activityName: groupData.activityID == null ?
+        "": _activityName,
+        userCreator: groupData.userCreator == null ?
+        "": groupData.userCreator,
+        // activityRef: groupData.activityRef == null ?
+        // "No Reference" :
+
+        // // gData: groupData,
+      });
+      // }
+    }
+    response.json(listGroups);
+  } else {
+    response.send("Groups by id not found");
+  }
+});
+
+
 router.get("/groups/byUser/:userID", async (request, response) => {
   const groups = await db.
       where("groupUsers", "array-contains", request.params.userID).get();
@@ -306,12 +384,11 @@ router.patch("/groups", async (request, response) => {
 
 
   const newGroup = {
-    "id": request.body.id,
     "groupName": request.body.groupName,
     "groupDescription": request.body.groupDescription,
-    "groupAdmins": [request.body.groupAdmins],
-    "groupPending": [request.body.groupPending],
-    "groupUsers": [request.body.groupUsers],
+    "groupAdmins": request.body.groupAdmins,
+    "groupPending": request.body.groupPending,
+    "groupUsers": request.body.groupUsers,
     "imageUrl": request.body.imageUrl,
     "activityID": request.body.activityID,
     // "activityName": _activityName,
