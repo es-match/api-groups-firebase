@@ -394,9 +394,23 @@ router.patch("/groups", async (request, response) => {
     // "activityName": _activityName,
   };
 
+  let _activityName;
 
-  db.doc(newGroup.id).update(newGroup)
-      .then(() => {
+  try {
+    _activityName = await dbAct.doc(request.body.activityID).get()
+        .then((activity) => {
+          return activity.data().activityName == null ?
+      "": activity.data().activityName;
+        });
+  } catch (error) {
+    _activityName = null;
+  }
+
+
+  db.doc(request.body.id).update(newGroup)
+      .then((group) => {
+        newGroup.id = group.id;
+        newGroup.activityName = _activityName;
         response.status(200).json(newGroup);
       }).catch((e) => {
         response.status(500).send(e.message);
